@@ -26,8 +26,11 @@ Example:
 
 gl::Grid\<Tile, char> exampleGrid(2, 3, 'c');
 //the resulting grid would be
+
 cc
+
 cc
+
 cc
 
 Useful Functions:
