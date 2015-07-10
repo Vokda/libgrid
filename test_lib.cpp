@@ -32,8 +32,8 @@ private:
 	
 };
 
-class Tile_Inheriting_Members
-	:	public Tile, public gl::Additional_Tile_Members<Tile_Inheriting_Members, std::pair<int, int>>
+class Tile_Inheriting_Members:
+	public Tile, public gl::Additional_Tile_Members<Tile_Inheriting_Members>
 
 	/*
 		public grid_lib::Required_Tile_Members<Tile_Inheriting_Members>,
@@ -47,8 +47,9 @@ public:
 	}
 
 	Tile_Inheriting_Members(int x, int y, char c, int offset)
-		: Tile(x, y, c), Additional_Tile_Members(x, y, pair<int, int>(x * offset, y * offset))
+		: Tile(x, y, c), Additional_Tile_Members(x, y)
 	{
+		position = pair<int, int>(x * offset, y * offset);
 	}
 
 	void set_position(int x, int y) 
@@ -56,6 +57,14 @@ public:
 		position.first = x;
 		position.second = y;
 	}
+
+	std::pair<int, int> get_position() const
+	{
+		return position;
+	}
+
+private:
+	std::pair<int, int> position;
 };
 
 //functor

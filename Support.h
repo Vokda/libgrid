@@ -8,7 +8,7 @@ using namespace std;
 
 namespace gl
 {
-	template<class tile_type, class position_type>
+	template<class tile_type>
 	class Additional_Tile_Members
 	{
 	public:
@@ -18,14 +18,10 @@ namespace gl
 			grid_position(x_pos, y_pos)
 		{}
 
-		Additional_Tile_Members(int x_pos, int y_pos, position_type pt) :
-			grid_position(x_pos, y_pos), position(pt)
-		{}
 
 		Additional_Tile_Members() :
 			grid_position(-1, -1)
-		{
-		}
+		{}
 
 		virtual ~Additional_Tile_Members(){};
 
@@ -52,16 +48,6 @@ namespace gl
 		{
 			return neighbors;
 		}
-	protected:
-		tile_neighbors neighbors;
-
-
-
-		/*-----------------------------------------------------------------------------
-			GRID POSITION
-			This is the position in the grid. This cannot change when the tile is created it will be created.
-		*/
-	public:
 
 		pair<int, int> get_grid_position() const
 		{
@@ -70,24 +56,9 @@ namespace gl
 
 
 	protected:
+		tile_neighbors neighbors;
 		const pair<int, int> grid_position;
 
-		/*----------------------------------------------------------------------------
-			CUSTOM POSITION
-			This is a position that may or may not relate to the grid position
-		*/
-	public:
-		position_type get_position() const
-		{
-			return position;
-		};
-		
-		virtual void set_position(position_type p)
-		{
-			position = p;
-		}
-	protected:
-		position_type position;
 
 	};
 }
