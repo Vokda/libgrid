@@ -44,9 +44,7 @@ Support.h
 Contains the class Additional_Tile_Members. Optional to use. To make use of it simply let your tile class inherit from it. It allows for automatically connecting the tiles during creation of the grid.
 
 Example:
-class Tile: public Additional_Tile_Members<Tile>
-
-ALTERNATIVE_POSITION could for example be std::pair<T, T> from the standard library.
+class Tile: public Additional_Tile_Members\<Tile>
 
 Not Implemented:
 
