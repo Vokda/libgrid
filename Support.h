@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+#include <map>
 using namespace std;
 
 /*
@@ -12,7 +12,8 @@ namespace gl
 	class Additional_Tile_Members
 	{
 	public:
-		typedef vector<tile_type*> tile_neighbors;
+		enum neighbor_direction{N, NE, E, SE, S, SW, W, NW};
+		typedef map<neighbor_direction, tile_type*> tile_neighbors;
 
 		Additional_Tile_Members(int x_pos, int y_pos) :
 			grid_position(x_pos, y_pos)
@@ -39,14 +40,19 @@ namespace gl
 		}*/
 
 
-		void add_neighbor(tile_type* neighbor)
+		void add_neighbor(tile_type* neighbor, neighbor_direction nd)
 		{
-			neighbors.push_back(neighbor);
+			neighbors[nd] = neighbor;
 		}
 
 		tile_neighbors& get_neighbors()
 		{
 			return neighbors;
+		}
+
+		tile_type* get_neighbor(neighbor_direction nd)
+		{
+			return neighbors[nd];
 		}
 
 		pair<int, int> get_grid_position() const

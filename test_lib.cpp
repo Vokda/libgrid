@@ -155,17 +155,17 @@ int main()
 	auto tile22 = complex_grid_connected.get_tile(2, 2)->get_neighbors();
 
 	cout << "tile 1,1 neighbors (center tile)" << endl;
-	for (auto neighbor : tile11)
+	for (auto& neighbor : tile11)
 	{
-		cout << "neighbor postion: x: " << neighbor->get_grid_position().first << ", ";
-		cout << "y: " << neighbor->get_grid_position().second << endl;
+		cout << "neighbor postion: x: " << neighbor.second->get_grid_position().first << ", ";
+		cout << "y: " << neighbor.second->get_grid_position().second << endl;
 	}
 
 	cout << endl << "tile 2,2 neighbors (lower right corner tile) " << endl;
-	for (auto neighbor : tile22)
+	for (auto& neighbor : tile22)
 	{
-		cout << "neighbor postion: x: " << neighbor->get_grid_position().first << ", ";
-		cout << "y: " << neighbor->get_grid_position().second << endl;
+		cout << "neighbor postion: x: " << neighbor.second->get_grid_position().first << ", ";
+		cout << "y: " << neighbor.second->get_grid_position().second << endl;
 	}
 
 	

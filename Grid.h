@@ -176,28 +176,28 @@ namespace gl
 						for (unsigned j = 0; j < grid_matrix.front().size(); j++)
 						{
 							if (j > 0)
-								grid_matrix[i][j]->add_neighbor(grid_matrix[i][j - 1].get()); //north ^
+								grid_matrix[i][j]->add_neighbor(grid_matrix[i][j - 1].get(), tile_type::N); //north ^
 
 							if (j > 0 && i < grid_matrix.size() - 1 && neighbors == 8)
-								grid_matrix[i][j]->add_neighbor(grid_matrix[i + 1][j - 1].get()); //north east  ^/
+								grid_matrix[i][j]->add_neighbor(grid_matrix[i + 1][j - 1].get(), tile_type::NE); //north east  ^/
 
 							if (i < grid_matrix.size() - 1)
-								grid_matrix[i][j]->add_neighbor(grid_matrix[i + 1][j].get()); //east >
+								grid_matrix[i][j]->add_neighbor(grid_matrix[i + 1][j].get(), tile_type::E); //east >
 
 							if (i < grid_matrix.size() - 1 && j < grid_matrix.front().size() - 1 && neighbors == 8)
-								grid_matrix[i][j]->add_neighbor(grid_matrix[i + 1][j + 1].get()); //south east \v
+								grid_matrix[i][j]->add_neighbor(grid_matrix[i + 1][j + 1].get(), tile_type::SE); //south east \v
 
 							if (j < grid_matrix.front().size() - 1)
-								grid_matrix[i][j]->add_neighbor(grid_matrix[i][j + 1].get()); //south v
+								grid_matrix[i][j]->add_neighbor(grid_matrix[i][j + 1].get(), tile_type::S); //south v
 
 							if (j < grid_matrix.front().size() - 1 && i > 0 && neighbors == 8)
-								grid_matrix[i][j]->add_neighbor(grid_matrix[i - 1][j + 1].get()); //south west v/
+								grid_matrix[i][j]->add_neighbor(grid_matrix[i - 1][j + 1].get(), tile_type::SW); //south west v/
 
 							if (i > 0)
-								grid_matrix[i][j]->add_neighbor(grid_matrix[i - 1][j].get()); //west <
+								grid_matrix[i][j]->add_neighbor(grid_matrix[i - 1][j].get(), tile_type::W); //west <
 
 							if (j > 0 && i > 0 && neighbors == 8)
-								grid_matrix[i][j]->add_neighbor(grid_matrix[i - 1][j - 1].get()); //north west \<
+								grid_matrix[i][j]->add_neighbor(grid_matrix[i - 1][j - 1].get(), tile_type::NW); //north west \<
 						}
 					}
 				}
