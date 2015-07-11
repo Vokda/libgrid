@@ -41,12 +41,10 @@ get_tile(int x, int y) - retrieves a tile at the specified coordinates. Returns 
 
 Support.h
 
-Contains the class Additional_Tile_Members. Optional to use. To make use of it simply let your tile class inherit from it. It allows for automatically connecting the tiles during creation of the grid. It also allows you to set your own positioning to the tile. This can be useful if the tiles needs different positioning when being drawn graphically. 
+Contains the class Additional_Tile_Members. Optional to use. To make use of it simply let your tile class inherit from it. It allows for automatically connecting the tiles during creation of the grid.
 
 Example:
-class Tile: public Additional_Tile_Members<Tile, ALTERNATIVE_POSITION>
-
-ALTERNATIVE_POSITION could for example be std::pair<T, T> from the standard library.
+class Tile: public Additional_Tile_Members\<Tile>
 
 Not Implemented:
 
