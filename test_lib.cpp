@@ -1,6 +1,7 @@
 #include <iostream>
-#include "Grid.h"
-#include "Support.h"
+#include "grid.h"
+#include "support.h"
+#include <chrono>
 using namespace std;
 using namespace gl;
 
@@ -9,6 +10,9 @@ class Tile
 {
 public:
 	Tile(){ letter = 'D';}
+	Tile(const Tile& tile):
+		_x(tile._x), _y(tile._y), letter(tile.letter)
+	{}
 	Tile(int x, int y, char c):
 		_x(x), _y(y), letter(c)  
 	{
@@ -26,10 +30,9 @@ public:
 	{
 		return out << g.get_letter();
 	}
-	int _x, _y;
 private:
+	int _x, _y;
 	char letter;
-	
 };
 
 class Tile_Inheriting_Members:
@@ -183,17 +186,42 @@ int main()
 		cout << "position: " << "x: " << tile.get_position().first << ", y: " << tile.get_position().second << endl;
 	});
 
-	//copying grids not implemented at the moment 
-	
+	cout << "Function test completed." << endl;
+	cout << "Starting copy test." << endl;
 	//cout << "Copy constructing grid" << endl;
-	//auto copy_grid(complex_grid_connected);
-	//copy_grid.print();
+	gl::Grid<Tile> copy_grid(simple_grid);
+	cout << "simple_grid:" <<endl;
+	simple_grid.print();
+	cout << "copy_grid:" << endl;
+	copy_grid.print();
+
+	gl::Grid<Tile_Inheriting_Members, char> copy_complex_grid(complex_grid_connected, complex_grid_connected.get_number_of_neighbors());
+	cout << "complex_grid_connected" << endl;
+	complex_grid_connected.print();
+	cout << "copy_complex_grid" <<endl;
+	copy_complex_grid.print();
 
 	//cout << "Assignment test" << endl;
 	//auto assignment_grid = gl::Grid<Tile_Inheriting_Members, char> (3, 3, 8, 'C');
 	//assignment_grid.print();
-	
-	cout << "Test completed." << endl;
+	cout << "Copy test completed." << endl;
+	cout << "Stress test:" << endl;
+
+	//simple large grid
+	cout << "-----------------------------" << endl;
+	for(int i = 100; i < 10000; i*=2)
+	{
+		chrono::steady_clock::time_point t1 = chrono::steady_clock::now();
+		gl::Grid<Tile> simple_grid_large(i, i);
+		chrono::steady_clock::time_point t2 = chrono::steady_clock::now();
+		chrono::duration<double> time_taken = chrono::duration_cast<chrono::duration<double>>( t2 - t1);
+		size = simple_grid_large.get_grid_size();
+		cout << "Grid size: " << size.first << ", " << size.second << "." <<endl;
+		cout << "Number of tiles " << i*i << endl;
+		cout << "Creation took " << time_taken.count() << " seconds."<< endl;
+		cout << "-----------------------------" << endl;
+	}
+
 	return 0;
 }
 

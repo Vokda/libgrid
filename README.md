@@ -46,13 +46,17 @@ Contains the class Additional_Tile_Members. Optional to use. To make use of it s
 Example:
 class Tile: public Additional_Tile_Members\<Tile>
 
-Not Implemented:
+Newly added:
 
 Copying a grid.
+
+To be Implemented:
 
 Accessing tiles in a certain pattern such as in a line.
 
 Connecting grids to one another.
+
+multithread creation. Big grids take some time to create.
 
 Merging grids.
 
