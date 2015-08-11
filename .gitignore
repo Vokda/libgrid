@@ -11,5 +11,6 @@
 
 objects/*
 *.swp
-libgrid/*
+libgrid*
 libgrid_test
+
