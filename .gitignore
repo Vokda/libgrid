@@ -1,0 +1,15 @@
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+objects/*
+*.swp
+libgrid/*
+libgrid_test

@@ -143,7 +143,7 @@ namespace gl
 			}
 		}
 		//returns the horizontal and vertical size of the grid 
-		pair<int, int> get_grid_size()
+		pair<int, int> get_grid_size() const
 		{
 			return pair<int, int>(x_size, y_size);
 		}
@@ -283,7 +283,7 @@ namespace gl
 
 		//---------------PRINTING FUNCTIONS------------------
 
-		void print()
+		void print() const
 		{
 			for (auto& v : grid_matrix)
 			{

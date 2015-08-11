@@ -50,6 +50,11 @@ namespace gl
 			return neighbors;
 		}
 
+		tile_neighbors& get_neighbors() const
+		{
+			return neighbors;
+		}
+
 		tile_type* get_neighbor(neighbor_direction nd)
 		{
 			return neighbors[nd];
