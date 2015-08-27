@@ -1,5 +1,7 @@
-#pragma once
+#ifndef SUPPORT_H
+#define SUPPORT_H
 #include <map>
+#include <sstream>
 using namespace std;
 
 /*
@@ -65,6 +67,35 @@ namespace gl
 			return grid_position;
 		}
 
+		string save() const
+		{
+			//save neighbors
+			stringstream ss;
+			/*for(auto& neighbor : neighbors)
+			{
+				int neighbor_x = neighbor.second->get_grid_position().first;
+				int neighbor_y = neighbor.second->get_grid_position().second;
+				// neighbor.first = neighbor direction, neighbor pointer is saved as neighbor's position
+				ss << neighbor.first << ',' << neighbor_x << ',' << neighbor_y << ',';
+			}*/
+
+			//grid_position;
+			ss << (grid_position.first) << ' ' << (grid_position.second) << ' ';
+			return ss.str();
+		}
+
+		void load(const string& s)
+		{
+			stringstream ss(s);
+			//int n_x, n_y, nd;
+			//neighbor_direction nd;
+			//ss >> nd >> n_x >> n_y;
+			//auto neighbor = g->get_tile(n_x, n_y);
+			//add_neighbor(neighbor, (neighbor_direction) nd);
+
+			//position of this tile
+			ss >> const_cast<int&> (grid_position.first) >> const_cast<int&>(grid_position.second);
+		}
 
 	protected:
 		tile_neighbors neighbors;
@@ -73,3 +104,4 @@ namespace gl
 
 	};
 }
+#endif

@@ -50,6 +50,8 @@ Newly added:
 
 Copying a grid.
 
+Saving and loading grids.
+
 To be Implemented:
 
 Accessing tiles in a certain pattern such as in a line.

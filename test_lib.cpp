@@ -2,69 +2,116 @@
 #include "grid.h"
 #include "support.h"
 #include <chrono>
+#define STRESS_TEST false
+#define SAVE_LOAD_TEST true
 using namespace std;
 using namespace gl;
 
-//tile class that is used in grid
-class Tile
-{
-public:
-	Tile(){ letter = 'D';}
-	Tile(const Tile& tile):
-		_x(tile._x), _y(tile._y), letter(tile.letter)
-	{}
-	Tile(int x, int y, char c):
-		_x(x), _y(y), letter(c)  
+	//tile class that is used in grid
+	class Tile
 	{
+	public:
+		Tile(){ letter = 'D';}
 
-	}
 
-	char get_letter() const
+		Tile(const Tile& tile):
+			_x(tile._x), _y(tile._y), letter(tile.letter)
+		{}
+		Tile(int x, int y, char c = 'D'):
+			_x(x), _y(y), letter(c)  
+		{
+
+		}
+
+		char get_letter() const
+		{
+			return letter;
+		}
+
+		void set_letter(char c){letter = c;}
+
+		string save() const
+		{
+			stringstream ss;
+			ss << _x << ' ' << _y << ' ';
+			ss << letter << ' ';
+			return ss.str();
+		}
+
+		virtual void load(const string& data)
+		{
+			istringstream iss(data);
+			iss >> _x >> _y >> letter;
+		}
+
+		friend ostream& operator<<(ostream& out, const Tile& g)
+		{
+			return out << g.get_letter();
+		}
+
+		int get_x() const
+		{
+			return _x;
+		}
+
+		int get_y() const
+		{
+			return _y;
+		}
+
+	protected:
+		int _x, _y;
+		char letter;
+	};
+
+	class Tile_Inheriting_Members:
+		public Tile, public gl::Additional_Tile_Members<Tile_Inheriting_Members>
 	{
-		return letter;
-	}
+	public:
 
-	void set_letter(char c){letter = c;}
+		Tile_Inheriting_Members(int x, int y)
+			: Tile(x, y), Additional_Tile_Members(x, y)
+		{}
 
-	friend ostream& operator<<(ostream& out, const Tile& g)
-	{
-		return out << g.get_letter();
-	}
-private:
-	int _x, _y;
-	char letter;
-};
+		Tile_Inheriting_Members(int x, int y, char c)
+			: Tile(x, y, c), Additional_Tile_Members(x, y)
+		{
+		}
 
-class Tile_Inheriting_Members:
-	public Tile, public gl::Additional_Tile_Members<Tile_Inheriting_Members>
+		Tile_Inheriting_Members(int x, int y, char c, int offset)
+			: Tile(x, y, c), Additional_Tile_Members(x, y)
+		{
+			position = pair<int, int>(x * offset, y * offset);
+		}
 
-	/*
-		public grid_lib::Required_Tile_Members<Tile_Inheriting_Members>,
-		public grid_lib::Optional_Tile_Members < std::pair<int, int> >*/
-{
-public:
 
-	Tile_Inheriting_Members(int x, int y, char c)
-		: Tile(x, y, c), Additional_Tile_Members(x, y)
-	{
-	}
+		void set_position(int x, int y) 
+		{
+			position.first = x;
+			position.second = y;
+		}
 
-	Tile_Inheriting_Members(int x, int y, char c, int offset)
-		: Tile(x, y, c), Additional_Tile_Members(x, y)
-	{
-		position = pair<int, int>(x * offset, y * offset);
-	}
+		std::pair<int, int> get_position() const
+		{
+			return position;
+		}
 
-	void set_position(int x, int y) 
-	{
-		position.first = x;
-		position.second = y;
-	}
+		string save() const
+		{
+			stringstream ss;
+			ss << position.first << ' ' << position.second << ' ' << Tile::save() << gl::Additional_Tile_Members<Tile_Inheriting_Members>::save();
+			return ss.str();
+		}
 
-	std::pair<int, int> get_position() const
-	{
-		return position;
-	}
+		void load(const string data)
+		{
+			istringstream iss(data);
+			iss >> position.first >> position.second;
+			iss >> _x >> _y >> letter;
+			string s;
+			getline(iss, s);
+			gl::Additional_Tile_Members<Tile_Inheriting_Members>::load(s);
+		}
 
 private:
 	std::pair<int, int> position;
@@ -205,6 +252,47 @@ int main()
 	//auto assignment_grid = gl::Grid<Tile_Inheriting_Members, char> (3, 3, 8, 'C');
 	//assignment_grid.print();
 	cout << "Copy test completed." << endl;
+
+	/*
+	 *******************TESTING LOAD AND SAVE FUNCTIONS*************************
+	 */
+	#if SAVE_LOAD_TEST
+
+	cout << "Save/load test. " << endl;
+
+	cout << "Save simple grid:" << endl;
+	cout << simple_grid << endl;
+	simple_grid.save("simple.grid");
+	gl::Grid<Tile> load_grid("simple.grid");
+	cout << "Load simple grid to a new grid:" << endl;
+	cout << load_grid << endl;
+
+
+
+	cout << "Save complex grid:" << endl;
+	cout << complex_grid_connected << endl;
+	complex_grid_connected.save("complex.grid");
+	gl::Grid<Tile_Inheriting_Members> load_complex_grid("complex.grid", true);
+	cout << "Load complex grid to a new grid:" << endl;
+	//cout << load_complex_grid << endl;
+	load_complex_grid.print();
+	tile11 = load_complex_grid.get_tile(1, 1)->get_neighbors();
+
+	cout << "tile 1,1 neighbors (center tile)" << endl;
+	for (auto& neighbor : tile11)
+	{
+		cout << "neighbor postion: x: " << neighbor.second->get_grid_position().first << ", ";
+		cout << "y: " << neighbor.second->get_grid_position().second << endl;
+	}
+
+	cout << "Save/load test completed." << endl;
+
+	#endif
+	/*
+	 * *************************************STRESS TEST**********************************
+	 */
+	#if STRESS_TEST
+
 	cout << "Stress test:" << endl;
 
 	//simple large grid
@@ -221,7 +309,7 @@ int main()
 		cout << "Creation took " << time_taken.count() << " seconds."<< endl;
 		cout << "-----------------------------" << endl;
 	}
-
+	#endif
 	return 0;
 }
 

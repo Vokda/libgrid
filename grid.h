@@ -1,8 +1,12 @@
-#pragma once
+#ifndef GRID_H
+#define GRID_H
+#include <sstream>
+#include <fstream>
 #include <vector>
 #include <memory>
 #include <string>
 #include <iostream>
+//class Additional_Tile_Members;
 #include "support.h"
 using namespace std;
 
@@ -18,6 +22,24 @@ namespace gl
 		typedef vector<vector< unique_ptr<tile_type> >> matrix;
 
 		//----------------CONSTRUCTORS-----------------
+
+		/*
+		 * this constructor will load a grid from the given
+		 */
+
+		explicit Grid(const string& save_file):
+			x_size(0), y_size(0), _neighbors(0)
+		{
+			load(save_file);
+		}
+
+		explicit Grid(const string& save_file, bool reconnect_tiles):
+			x_size(0), y_size(0), _neighbors(0)
+		{
+			load(save_file);
+			if (reconnect_tiles)
+				connect_tiles(_neighbors);
+		}
 
 		explicit Grid(unsigned x, unsigned y, arg_types ... args) :
 			x_size(x), y_size(y), _neighbors(0)
@@ -67,6 +89,69 @@ namespace gl
 		//------------FUNCTION MEMBERS-------------
 
 		/*
+		 * saves the grid. This is dependant on the tile_type having a save function itself.
+		 * this function expects the tile_type save() to return a string that can be written to a file
+		 */
+
+		virtual void save(const string& save_name) 
+		{
+			ofstream save_file;
+			save_file.open(save_name, ofstream::out | ofstream::trunc);
+			save_file << x_size << ',' << y_size << ',' << _neighbors << ',' << "\n";
+			for_each_tile([&save_file](tile_type& tile)
+			{
+				save_file << tile.save();	
+				save_file << ";\n";
+			});
+			save_file.close();
+			cout << "Grid saved!" << endl;
+		}
+
+		/*
+		 * loads a file to the grid. This is dependant on the tile_type having a load function itself.
+		 * this function expects tile_type load(const string& s, gl::Grid<tile_type>* g) to take a string that is loaded from the file
+		 *  and a this pointer. If using support.h this will be necessary. 
+		 *  This function requires that the tile_type has a default constructor
+		 */
+
+		virtual void load(const string& save_name) 
+		{
+			string data;
+			stringstream ss;
+			ifstream load_file(save_name);
+			if(load_file.is_open())
+			{
+				//x_size
+				getline(load_file, data, ',');
+				istringstream (data) >> const_cast<unsigned&>(x_size);
+
+				//y_size
+				getline(load_file, data, ',');
+				istringstream (data) >> const_cast<unsigned&>(y_size);
+
+				//_neighbors
+				getline(load_file, data, ',');
+				istringstream (data) >> const_cast<unsigned&>(_neighbors);
+
+				fill_tiles();
+
+
+				for_each_tile([&load_file, &data](tile_type& tile)
+				{
+					if(getline(load_file, data, ';'))
+					{
+						tile.load(data);
+						//data.clear();
+					}
+				});
+				load_file.close();
+				cout << "Grid loaded!" << endl;
+			}
+			else 
+				cout << "Unable to open " << save_name << endl;
+		}
+
+		/*
 		 * Copies grid m to new_grid and returns it. 
 		 */
 		void copy_grid(const Grid& g)
@@ -81,7 +166,7 @@ namespace gl
 			}
 		}
 
-		/* 
+			/* 
 		 * retuns number of neighbors that each tile has.
 		 * This is only ever useful if a neighbor nubmer is set in a constructor
 		 */
@@ -178,7 +263,7 @@ namespace gl
 				grid_matrix.push_back(vector<unique_ptr<tile_type>>());
 				for (unsigned y = 0; y < y_size; ++y)
 				{
-					grid_matrix.back().push_back(unique_ptr<tile_type>(new tile_type()));
+					grid_matrix.back().push_back(unique_ptr<tile_type>(new tile_type(x, y)));
 				}
 			}
 		}
@@ -314,7 +399,9 @@ namespace gl
 		matrix grid_matrix;
 		Grid() = delete;
 		//Grid(const Grid& g) = delete;
-		const unsigned x_size, y_size; //size of grid
-		const unsigned _neighbors;
+		volatile const unsigned x_size, y_size; //size of grid
+		volatile const unsigned _neighbors;
 	};
 }
+
+#endif
